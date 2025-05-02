@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>政府採購網 - 醫院機關標案清單</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        body {
+            font-family: '微軟正黑體', 'Microsoft JhengHei', Arial, sans-serif;
+        }
+        @media print {
+            .no-break {
+                break-inside: avoid;
+            }
+            .page-container {
+                width: 100%;
+            }
+        }
+        .tender-row:nth-child(odd) {
+            background-color: #f9fafb;
+        }
+        .tender-row:hover {
+            background-color: #f3f4f6;
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <div class="page-container max-w-6xl mx-auto px-4 py-8">
+        <header class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">政府採購網 - 醫院機關標案清單</h1>
+            <p class="text-lg text-gray-600">根據政府電子採購網，列出機關名稱含有「醫院」關鍵字的標案資料</p>
+            <div class="mt-4 flex items-center text-sm text-gray-500">
+                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <p>資料來源：<a href="https://web.pcc.gov.tw/prkms/today/common/todayTender" class="text-blue-600 hover:underline" target="_blank">政府電子採購網即時公開之招標案件</a></p>
+            </div>
+        </header>
+
+        <main>
+            <div class="overflow-hidden shadow-md rounded-lg">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead class="bg-gray-800 text-white">
+                        <tr>
+                            <th scope="col" class="px-4 py-3 text-left text-sm font-medium uppercase tracking-wider">
+                                編號
+                            </th>
+                            <th scope="col" class="px-4 py-3 text-left text-sm font-medium uppercase tracking-wider">
+                                機關名稱
+                            </th>
+                            <th scope="col" class="px-4 py-3 text-left text-sm font-medium uppercase tracking-wider">
+                                標案名稱
+                            </th>
+                            <th scope="col" class="px-4 py-3 text-left text-sm font-medium uppercase tracking-wider">
+                                標案編號
+                            </th>
+                            <th scope="col" class="px-4 py-3 text-left text-sm font-medium uppercase tracking-wider">
+                                招標日期
+                            </th>
+                            <th scope="col" class="px-4 py-3 text-left text-sm font-medium uppercase tracking-wider">
+                                連結
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        <tr class="tender-row no-break">
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">1</td>
+                            <td class="px-4 py-3 text-sm text-gray-800">高雄榮民總醫院</td>
+                            <td class="px-4 py-3 text-sm text-gray-800">台灣微軟支援服務1式</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">CP14028</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">114/05/07</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium">
+                                <a href="https://web.pcc.gov.tw/tps/QueryTender/query/searchTenderDetail?pkPmsMain=NzA4OTMxODU=" target="_blank" class="text-blue-600 hover:text-blue-900">查看</a>
+                            </td>
+                        </tr>
+                        <tr class="tender-row no-break">
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">2</td>
+                            <td class="px-4 py-3 text-sm text-gray-800">衛生福利部金門醫院</td>
+                            <td class="px-4 py-3 text-sm text-gray-800">脊椎撐開器組</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">KA11404</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">114/05/12</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium">
+                                <a href="https://web.pcc.gov.tw/tps/QueryTender/query/searchTenderDetail?pkPmsMain=NzA4OTI4OTg=" target="_blank" class="text-blue-600 hover:text-blue-900">查看</a>
+                            </td>
+                        </tr>
+                        <tr class="tender-row no-break">
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">3</td>
+                            <td class="px-4 py-3 text-sm text-gray-800">衛生福利部臺北醫院</td>
+                            <td class="px-4 py-3 text-sm text-gray-800">加護病房衛材乙項</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">2878-114008</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">114/05/06</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium">
+                                <a href="https://web.pcc.gov.tw/tps/QueryTender/query/searchTenderDetail?pkPmsMain=NzA4OTI4NTM=" target="_blank" class="text-blue-600 hover:text-blue-900">查看</a>
+                            </td>
+                        </tr>
+                        <tr class="tender-row no-break">
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">4</td>
+                            <td class="px-4 py-3 text-sm text-gray-800">衛生福利部臺北醫院</td>
+                            <td class="px-4 py-3 text-sm text-gray-800">加護病房衛材二項</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">2878-114007</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">114/05/06</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium">
+                                <a href="https://web.pcc.gov.tw/tps/QueryTender/query/searchTenderDetail?pkPmsMain=NzA4OTI4MTk=" target="_blank" class="text-blue-600 hover:text-blue-900">查看</a>
+                            </td>
+                        </tr>
+                        <tr class="tender-row no-break">
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">5</td>
+                            <td class="px-4 py-3 text-sm text-gray-800">衛生福利部苗栗醫院</td>
+                            <td class="px-4 py-3 text-sm text-gray-800">一次性使用真空採血管一批</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">MLH11302042</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">114/05/12</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium">
+                                <a href="https://web.pcc.gov.tw/tps/QueryTender/query/searchTenderDetail?pkPmsMain=NzA4OTI2NzM=" target="_blank" class="text-blue-600 hover:text-blue-900">查看</a>
+                            </td>
+                        </tr>
+                        <tr class="tender-row no-break">
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">6</td>
+                            <td class="px-4 py-3 text-sm text-gray-800">衛生福利部臺北醫院</td>
+                            <td class="px-4 py-3 text-sm text-gray-800">R1磁振造影儀MRI SIEMENS-MAGNETOM Avanto維護保養案</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">TPH-2874-11411</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">114/05/13</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium">
+                                <a href="https://web.pcc.gov.tw/tps/QueryTender/query/searchTenderDetail?pkPmsMain=NzA4OTIwNzc=" target="_blank" class="text-blue-600 hover:text-blue-900">查看</a>
+                            </td>
+                        </tr>
+                        <tr class="tender-row no-break">
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">7</td>
+                            <td class="px-4 py-3 text-sm text-gray-800">衛生福利部臺北醫院</td>
+                            <td class="px-4 py-3 text-sm text-gray-800">R6高頻X光機及數位影像系統維護保養案</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">TPH-2874-11410</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">114/05/13</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium">
+                                <a href="https://web.pcc.gov.tw/tps/QueryTender/query/searchTenderDetail?pkPmsMain=NzA4OTIwMzA=" target="_blank" class="text-blue-600 hover:text-blue-900">查看</a>
+                            </td>
+                        </tr>
+                        <tr class="tender-row no-break">
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">8</td>
+                            <td class="px-4 py-3 text-sm text-gray-800">衛生福利部臺北醫院</td>
+                            <td class="px-4 py-3 text-sm text-gray-800">R3電腦斷層掃描儀CT SIEMENS-Somatom Definition AS維護保養案</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">TPH-2874-11409</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">114/05/13</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium">
+                                <a href="https://web.pcc.gov.tw/tps/QueryTender/query/searchTenderDetail?pkPmsMain=NzA4OTE5OTM=" target="_blank" class="text-blue-600 hover:text-blue-900">查看</a>
+                            </td>
+                        </tr>
+                        <tr class="tender-row no-break">
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">9</td>
+                            <td class="px-4 py-3 text-sm text-gray-800">新北市立聯合醫院</td>
+                            <td class="px-4 py-3 text-sm text-gray-800">椎體支架系統開口契約</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">114C0202</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">114/05/16</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium">
+                                <a href="https://web.pcc.gov.tw/tps/QueryTender/query/searchTenderDetail?pkPmsMain=NzA4OTE2Mzc=" target="_blank" class="text-blue-600 hover:text-blue-900">查看</a>
+                            </td>
+                        </tr>
+                        <tr class="tender-row no-break">
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">10</td>
+                            <td class="px-4 py-3 text-sm text-gray-800">衛生福利部桃園醫院</td>
+                            <td class="px-4 py-3 text-sm text-gray-800">非聯標衛材3項採購案</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">TYGH114120</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">114/05/19</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium">
+                                <a href="https://web.pcc.gov.tw/tps/QueryTender/query/searchTenderDetail?pkPmsMain=NzA4OTIzNjQ=" target="_blank" class="text-blue-600 hover:text-blue-900">查看</a>
+                            </td>
+                        </tr>
+                        <tr class="tender-row no-break">
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">11</td>
+                            <td class="px-4 py-3 text-sm text-gray-800">衛生福利部桃園醫院</td>
+                            <td class="px-4 py-3 text-sm text-gray-800">非聯標衛材3項採購案</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">TYGH114119</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">114/05/19</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium">
+                                <a href="https://web.pcc.gov.tw/tps/QueryTender/query/searchTenderDetail?pkPmsMain=NzA4OTIzNTc=" target="_blank" class="text-blue-600 hover:text-blue-900">查看</a>
+                            </td>
+                        </tr>
+                        <tr class="tender-row no-break">
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">12</td>
+                            <td class="px-4 py-3 text-sm text-gray-800">衛生福利部桃園醫院</td>
+                            <td class="px-4 py-3 text-sm text-gray-800">泌尿外科-尿道擴張系統採購案</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">TYGH114118</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">114/05/13</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium">
+                                <a href="https://web.pcc.gov.tw/tps/QueryTender/query/searchTenderDetail?pkPmsMain=NzA4OTIzNTM=" target="_blank" class="text-blue-600 hover:text-blue-900">查看</a>
+                            </td>
+                        </tr>
+                        <tr class="tender-row no-break">
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">13</td>
+                            <td class="px-4 py-3 text-sm text-gray-800">臺北榮民總醫院</td>
+                            <td class="px-4 py-3 text-sm text-gray-800">核醫部排程資料儲存及報告系統整合委外維護三年</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">Z114114K</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">114/05/07</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium">
+                                <a href="https://web.pcc.gov.tw/tps/QueryTender/query/searchTenderDetail?pkPmsMain=NzA4OTMwMzc=" target="_blank" class="text-blue-600 hover:text-blue-900">查看</a>
+                            </td>
+                        </tr>
+                        <tr class="tender-row no-break">
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">14</td>
+                            <td class="px-4 py-3 text-sm text-gray-800">臺北榮民總醫院</td>
+                            <td class="px-4 py-3 text-sm text-gray-800">腦部深部電極8項單價開口契約</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">1140229N</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">114/05/08</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium">
+                                <a href="https://web.pcc.gov.tw/tps/QueryTender/query/searchTenderDetail?pkPmsMain=NzA4OTI5OTY=" target="_blank" class="text-blue-600 hover:text-blue-900">查看</a>
+                            </td>
+                        </tr>
+                        <tr class="tender-row no-break">
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">15</td>
+                            <td class="px-4 py-3 text-sm text-gray-800">臺北榮民總醫院</td>
+                            <td class="px-4 py-3 text-sm text-gray-800">二門診八樓傳統醫學部(含中藥局)整修(空調及附屬設備財物採購)</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">11433023</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">114/05/06</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium">
+                                <a href="https://web.pcc.gov.tw/tps/QueryTender/query/searchTenderDetail?pkPmsMain=NzA4OTMwMDk=" target="_blank" class="text-blue-600 hover:text-blue-900">查看</a>
+                            </td>
+                        </tr>
+                        <tr class="tender-row no-break">
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">16</td>
+                            <td class="px-4 py-3 text-sm text-gray-800">臺北榮民總醫院</td>
+                            <td class="px-4 py-3 text-sm text-gray-800">雙腔導管2年單價開口契約</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">1140275E</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">114/05/20</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium">
+                                <a href="https://web.pcc.gov.tw/tps/QueryTender/query/searchTenderDetail?pkPmsMain=NzA4OTI3MjE=" target="_blank" class="text-blue-600 hover:text-blue-900">查看</a>
+                            </td>
+                        </tr>
+                        <tr class="tender-row no-break">
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">17</td>
+                            <td class="px-4 py-3 text-sm text-gray-800">臺北榮民總醫院新竹分院</td>
+                            <td class="px-4 py-3 text-sm text-gray-800">流行性感冒病毒A+B抗原快篩檢驗試劑開口契約</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">V11401</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm text-gray-500">114/05/13</td>
+                            <td class="px-4 py-3 whitespace-nowrap text-sm font-medium">
+                                <a href="https://web.pcc.gov.tw/tps/QueryTender/query/searchTenderDetail?pkPmsMain=NzA4ODc4MjY=" target="_blank" class="text-blue-600 hover:text-blue-900">查看</a>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+
+        <footer class="mt-8 text-center text-gray-500 text-sm">
+            <p>資料更新時間：民國114年05月版</p>
+            <p>本頁資料僅供參考，實際標案內容及預算金額請以政府電子採購網公告為準</p>
+        </footer>
+    </div>
+</body>
+</html>
