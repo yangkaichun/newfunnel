@@ -8,40 +8,41 @@
     <style>
         body {
             font-family: Arial, 'Microsoft JhengHei', sans-serif;
-        }
+}
         .loading {
             display: flex;
-            justify-content: center;
+justify-content: center;
             align-items: center;
             margin: 20px 0;
         }
         .loading-spinner {
             border: 5px solid #f3f3f3;
-            border-top: 5px solid #3498db;
+border-top: 5px solid #3498db;
             border-radius: 50%;
             width: 50px;
             height: 50px;
             animation: spin 1s linear infinite;
-        }
+}
         @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% { transform: rotate(0deg);
+}
+            100% { transform: rotate(360deg);
+}
         }
         @media print {
             .no-print {
                 display: none;
-            }
+}
         }
         table {
             page-break-inside: avoid;
-        }
+}
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen">
     <div class="container mx-auto px-4 py-8">
         <h1 class="text-3xl font-bold text-center mb-8">政府採購招標資訊篩選系統 當日案件 BY KC</h1>
-        
-        <!-- 選單區塊 -->
+
         <div class="bg-white rounded-lg shadow-md p-4 mb-6 no-print">
             <div class="flex flex-wrap justify-center mb-4">
                 <button id="btn-all" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-1 focus:outline-none focus:shadow-outline">
@@ -49,253 +50,248 @@
                 </button>
                 <button id="btn-health-bureau" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-1 focus:outline-none focus:shadow-outline">
                     衛生局
-                </button>
+</button>
                 <button id="btn-mohw" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-1 focus:outline-none focus:shadow-outline">
                     衛生福利部
                 </button>
                 <button id="btn-hpa" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-1 focus:outline-none focus:shadow-outline">
-                    國民健康署
+國民健康署
                 </button>
                 <button id="btn-hospital" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-1 focus:outline-none focus:shadow-outline">
                     醫院
                 </button>
-            </div>
-            
+</div>
+
             <div class="flex flex-wrap items-center justify-center">
                 <input id="custom-search" type="text" placeholder="輸入機關名稱關鍵字" class="border border-gray-300 rounded px-4 py-2 mx-2 flex-grow max-w-md">
                 <button id="btn-search" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded m-1 focus:outline-none focus:shadow-outline">
-                    搜尋
+搜尋
                 </button>
             </div>
         </div>
-        
-        <!-- 資料顯示區 -->
+
         <div class="bg-white rounded-lg shadow-md p-4">
-            <div id="filter-info" class="font-bold text-xl mb-4 text-center">載入全部資料中...</div>
-            
+            <div id="filter-info" class="font-bold text-xl mb-4 text-center">載入招標資料中...</div>
+
             <div id="loading" class="loading">
                 <div class="loading-spinner"></div>
             </div>
-            
+
             <div id="error-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                無法直接從網站獲取資料，請手動開啟 <a href="https://web.pcc.gov.tw/prkms/today/common/todayTender" class="underline text-blue-600" target="_blank">政府採購網</a> 查看今日招標資訊。
+                抓取或處理資料時發生錯誤。由於瀏覽器限制 (CORS)，可能需要透過後端代理才能從 <a href="https://web.pcc.gov.tw/prkms/today/common/todayTender" class="underline text-blue-600" target="_blank">政府採購網</a> 獲取資料。請檢查瀏覽器開發者主控台獲取詳細錯誤信息。
+
             </div>
-            
+
             <div id="result-info" class="text-gray-600 mb-4 text-center"></div>
-            
+
             <div class="overflow-x-auto">
                 <table class="min-w-full bg-white">
-                    <thead>
+<thead>
                         <tr class="bg-gray-200 text-gray-700">
                             <th class="py-2 px-4 border-b text-left">編號</th>
                             <th class="py-2 px-4 border-b text-left">機關名稱</th>
-                            <th class="py-2 px-4 border-b text-left">標案名稱</th>
+<th class="py-2 px-4 border-b text-left">標案名稱</th>
                             <th class="py-2 px-4 border-b text-left">招標方式</th>
                             <th class="py-2 px-4 border-b text-left">截止投標</th>
-                            <th class="py-2 px-4 border-b text-left">預算金額</th>
+<th class="py-2 px-4 border-b text-left">預算金額</th>
                         </tr>
                     </thead>
                     <tbody id="tender-data">
-                        <!-- 這裡將會動態填入資料 -->
-                    </tbody>
+</tbody>
                 </table>
             </div>
         </div>
-        
+
         <div class="text-center text-gray-500 mt-8 text-sm">
-            資料來源: <a href="https://web.pcc.gov.tw/prkms/today/common/todayTender" class="underline" target="_blank">政府電子採購網</a>
+資料來源: <a href="https://web.pcc.gov.tw/prkms/today/common/todayTender" class="underline" target="_blank">政府電子採購網</a>
         </div>
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const loadingEl = document.getElementById('loading');
-            const errorMessageEl = document.getElementById('error-message');
+const errorMessageEl = document.getElementById('error-message');
             const tenderDataEl = document.getElementById('tender-data');
             const filterInfoEl = document.getElementById('filter-info');
             const resultInfoEl = document.getElementById('result-info');
             const customSearchEl = document.getElementById('custom-search');
-            
-            // 按鈕元素
+// 按鈕元素
             const btnAll = document.getElementById('btn-all');
-            const btnHealthBureau = document.getElementById('btn-health-bureau');
+const btnHealthBureau = document.getElementById('btn-health-bureau');
             const btnMohw = document.getElementById('btn-mohw');
             const btnHpa = document.getElementById('btn-hpa');
             const btnHospital = document.getElementById('btn-hospital');
             const btnSearch = document.getElementById('btn-search');
-            
-            // 儲存所有招標資料
+
+// 儲存所有招標資料
             let allTenderData = [];
-            
-            // 模擬從政府採購網獲取的資料
-            // 實際情況下，這裡應該使用fetch從政府採購網獲取資料
-            // 由於CORS限制，這裡使用模擬資料代替
+
+            // *** 重要提示 ***
+            // 由於瀏覽器 CORS 限制，以下 fetch 可能無法直接在瀏覽器中成功執行。
+            // 您需要設置一個後端代理伺服器來抓取政府採購網的資料，
+            // 然後讓這個前端 JavaScript 向您的代理伺服器請求資料。
             function fetchTenderData() {
                 loadingEl.classList.remove('hidden');
-                
-                // 模擬API請求延遲
-                setTimeout(() => {
-                    try {
-                        // 實際專案中，這裡應該使用fetch獲取資料
-                        // fetch('https://web.pcc.gov.tw/prkms/today/common/todayTender')
-                        //     .then(response => response.text())
-                        //     .then(html => {
-                        //         解析HTML內容，提取招標資訊
-                        //     })
-                        //     .catch(error => {
-                        //         console.error('獲取資料失敗:', error);
-                        //         errorMessageEl.classList.remove('hidden');
-                        //     });
-                        
-                        // 由於無法直接從政府採購網獲取資料，這裡使用模擬資料
-                        allTenderData = generateSampleData();
-                        
-                        // 顯示所有資料
+                errorMessageEl.classList.add('hidden'); // 隱藏之前的錯誤訊息
+                tenderDataEl.innerHTML = ''; // 清空舊資料
+                filterInfoEl.textContent = '載入招標資料中...';
+                resultInfoEl.textContent = '';
+
+// 嘗試直接從政府採購網獲取資料 (可能因 CORS 失敗)
+                // 實際部署時，應將 URL 替換為您的後端代理 API 端點
+                const targetUrl = 'https://web.pcc.gov.tw/prkms/today/common/todayTender';
+                // const proxyUrl = '/api/fetch-tenders'; // 假設您的代理 API 端點
+
+                fetch(targetUrl) // <-- 實際部署時，應改成 fetch(proxyUrl)
+.then(response => {
+                        if (!response.ok) {
+                            throw new Error(`HTTP error! status: ${response.status}`);
+                        }
+                        return response.text(); // 獲取 HTML 文本
+                    })
+                    .then(html => {
+                        // *** 需要實現 HTML 解析邏輯 ***
+                        // 在這裡，您需要解析 `html` 字串 (來自政府採購網的 HTML 內容)
+                        // 使用 DOMParser 或正則表達式等方法，提取出招標表格中的每一行資料
+                        // 並將其轉換為包含 id, agency, title, method, deadline, budget 的物件陣列
+                        // 例如:
+                        // const parser = new DOMParser();
+                        // const doc = parser.parseFromString(html, 'text/html');
+                        // const rows = doc.querySelectorAll('選擇器指向招標表格的資料列');
+                        // allTenderData = Array.from(rows).map(row => {
+                        //     const cells = row.querySelectorAll('td');
+                        //     return {
+                        //         id: cells[0].textContent.trim(),
+                        //         agency: cells[1].textContent.trim(),
+                        //         title: cells[2].textContent.trim(),
+                        //         method: cells[3].textContent.trim(),
+                        //         deadline: cells[4].textContent.trim(),
+                        //         budget: cells[5].textContent.trim()
+                        //     };
+                        // });
+
+                        // --- 暫時的提示 ---
+                        console.log("成功獲取 HTML，但需要實作解析邏輯來提取資料。");
+                        allTenderData = []; // 清空資料，因為還未解析
+                        // --- 暫時的提示結束 ---
+
+                        // 顯示解析後的資料 (如果解析成功)
                         displayTenderData(allTenderData);
-                        filterInfoEl.textContent = '全部招標資料';
-                        resultInfoEl.textContent = `共有 ${allTenderData.length} 筆招標資訊`;
-                        
-                    } catch (error) {
-                        console.error('處理資料失敗:', error);
-                        errorMessageEl.classList.remove('hidden');
-                    } finally {
+filterInfoEl.textContent = '全部招標資料 (需實作解析)';
+                        resultInfoEl.textContent = `成功獲取原始 HTML，但待解析。目前顯示 ${allTenderData.length} 筆資料。`;
+
+})
+                    .catch(error => {
+                        console.error('獲取或處理資料失敗:', error);
+errorMessageEl.classList.remove('hidden'); // 顯示錯誤訊息
+                        filterInfoEl.textContent = '資料載入失敗';
+                        resultInfoEl.textContent = '';
+                    })
+                    .finally(() => {
                         loadingEl.classList.add('hidden');
-                    }
-                }, 1000);
-            }
-            
-            // 生成模擬資料
+});
+}
+
+            // 生成模擬資料的函數 (已不再需要，保留註解以供參考)
+            /*
             function generateSampleData() {
-                const agencies = [
-                    '臺北市政府衛生局', '新北市政府衛生局', '桃園市政府衛生局',
-                    '衛生福利部', '衛生福利部桃園醫院', '衛生福利部臺北醫院',
-                    '國民健康署', '國民健康署南區管理中心',
-                    '臺大醫院', '馬偕醫院', '長庚醫院', '三軍總醫院',
-                    '臺中市政府', '高雄市政府', '國防部', '教育部'
-                ];
-                
-                const methods = ['公開招標', '限制性招標', '公開評選', '公開取得報價單'];
-                
-                const sampleData = [];
-                for (let i = 1; i <= 100; i++) {
-                    const agency = agencies[Math.floor(Math.random() * agencies.length)];
-                    const method = methods[Math.floor(Math.random() * methods.length)];
-                    const budget = Math.floor(Math.random() * 10000000) + 100000;
-                    
-                    const now = new Date();
-                    const deadline = new Date(now);
-                    deadline.setDate(now.getDate() + Math.floor(Math.random() * 30) + 1);
-                    
-                    sampleData.push({
-                        id: `113${String(i).padStart(6, '0')}`,
-                        agency: agency,
-                        title: `${agency}${Math.random() > 0.5 ? '醫療設備' : '資訊系統'}採購案(${i})`,
-                        method: method,
-                        deadline: `${deadline.getFullYear()-1911}/${(deadline.getMonth()+1).toString().padStart(2, '0')}/${deadline.getDate().toString().padStart(2, '0')}`,
-                        budget: budget.toLocaleString()
-                    });
-                }
+                // ... (原來的模擬資料代碼) ...
                 return sampleData;
             }
-            
+            */
+
+
             // 顯示招標資料
             function displayTenderData(data) {
-                tenderDataEl.innerHTML = '';
-                
-                if (data.length === 0) {
+                tenderDataEl.innerHTML = ''; // 清空現有內容
+if (data.length === 0) {
                     tenderDataEl.innerHTML = `
                         <tr>
-                            <td colspan="6" class="py-4 text-center text-gray-500">沒有符合條件的招標資訊</td>
-                        </tr>
+                            <td colspan="6" class="py-4 text-center text-gray-500">沒有符合條件的招標資訊，或資料尚未成功解析。</td>
+</tr>
                     `;
-                    return;
+return;
                 }
-                
+
                 data.forEach(item => {
                     const row = document.createElement('tr');
                     row.className = 'hover:bg-gray-100';
-                    row.innerHTML = `
-                        <td class="py-2 px-4 border-b">${item.id}</td>
-                        <td class="py-2 px-4 border-b">${item.agency}</td>
-                        <td class="py-2 px-4 border-b">${item.title}</td>
-                        <td class="py-2 px-4 border-b">${item.method}</td>
-                        <td class="py-2 px-4 border-b">${item.deadline}</td>
-                        <td class="py-2 px-4 border-b">${item.budget}</td>
+row.innerHTML = `
+                        <td class="py-2 px-4 border-b">${item.id || ''}</td>
+                        <td class="py-2 px-4 border-b">${item.agency || ''}</td>
+                        <td class="py-2 px-4 border-b">${item.title || ''}</td>
+<td class="py-2 px-4 border-b">${item.method || ''}</td>
+                        <td class="py-2 px-4 border-b">${item.deadline || ''}</td>
+                        <td class="py-2 px-4 border-b">${item.budget || ''}</td>
                     `;
-                    tenderDataEl.appendChild(row);
+tenderDataEl.appendChild(row);
                 });
-            }
-            
+}
+
             // 按關鍵字篩選資料
             function filterDataByKeyword(keyword) {
-                return allTenderData.filter(item => item.agency.includes(keyword));
-            }
-            
-            // 註冊按鈕事件
-            btnAll.addEventListener('click', function() {
+                if (!allTenderData || allTenderData.length === 0) return []; // 防止在空資料上篩選
+                return allTenderData.filter(item => item.agency && item.agency.includes(keyword));
+}
+
+            // --- 按鈕事件監聽器 (與之前相同) ---
+btnAll.addEventListener('click', function() {
                 displayTenderData(allTenderData);
-                filterInfoEl.textContent = '全部招標資料';
+                filterInfoEl.textContent = '全部招標資料' + (allTenderData.length > 0 ? '' : ' (待解析)');
                 resultInfoEl.textContent = `共有 ${allTenderData.length} 筆招標資訊`;
                 customSearchEl.value = '';
             });
-            
-            btnHealthBureau.addEventListener('click', function() {
+btnHealthBureau.addEventListener('click', function() {
                 const keyword = '衛生局';
                 const filteredData = filterDataByKeyword(keyword);
                 displayTenderData(filteredData);
-                filterInfoEl.textContent = `「${keyword}」招標資料`;
-                resultInfoEl.textContent = `共有 ${filteredData.length} 筆招標資訊`;
-                customSearchEl.value = '';
+                filterInfoEl.textContent = `篩選：「${keyword}」`;
+                resultInfoEl.textContent = `找到 ${filteredData.length} 筆相關資訊`;
+customSearchEl.value = '';
             });
-            
-            btnMohw.addEventListener('click', function() {
+btnMohw.addEventListener('click', function() {
                 const keyword = '衛生福利部';
                 const filteredData = filterDataByKeyword(keyword);
                 displayTenderData(filteredData);
-                filterInfoEl.textContent = `「${keyword}」招標資料`;
-                resultInfoEl.textContent = `共有 ${filteredData.length} 筆招標資訊`;
-                customSearchEl.value = '';
+                filterInfoEl.textContent = `篩選：「${keyword}」`;
+                resultInfoEl.textContent = `找到 ${filteredData.length} 筆相關資訊`;
+customSearchEl.value = '';
             });
-            
-            btnHpa.addEventListener('click', function() {
+btnHpa.addEventListener('click', function() {
                 const keyword = '國民健康署';
                 const filteredData = filterDataByKeyword(keyword);
                 displayTenderData(filteredData);
-                filterInfoEl.textContent = `「${keyword}」招標資料`;
-                resultInfoEl.textContent = `共有 ${filteredData.length} 筆招標資訊`;
-                customSearchEl.value = '';
+                filterInfoEl.textContent = `篩選：「${keyword}」`;
+                resultInfoEl.textContent = `找到 ${filteredData.length} 筆相關資訊`;
+customSearchEl.value = '';
             });
-            
-            btnHospital.addEventListener('click', function() {
+btnHospital.addEventListener('click', function() {
                 const keyword = '醫院';
                 const filteredData = filterDataByKeyword(keyword);
                 displayTenderData(filteredData);
-                filterInfoEl.textContent = `「${keyword}」招標資料`;
-                resultInfoEl.textContent = `共有 ${filteredData.length} 筆招標資訊`;
-                customSearchEl.value = '';
+                filterInfoEl.textContent = `篩選：「${keyword}」`;
+                resultInfoEl.textContent = `找到 ${filteredData.length} 筆相關資訊`;
+customSearchEl.value = '';
             });
-            
-            btnSearch.addEventListener('click', function() {
+btnSearch.addEventListener('click', function() {
                 const keyword = customSearchEl.value.trim();
                 if (keyword === '') {
                     alert('請輸入搜尋關鍵字');
                     return;
                 }
-                
-                const filteredData = filterDataByKeyword(keyword);
+const filteredData = filterDataByKeyword(keyword);
                 displayTenderData(filteredData);
-                filterInfoEl.textContent = `「${keyword}」招標資料`;
-                resultInfoEl.textContent = `共有 ${filteredData.length} 筆招標資訊`;
+                filterInfoEl.textContent = `搜尋：「${keyword}」`;
+                resultInfoEl.textContent = `找到 ${filteredData.length} 筆相關資訊`;
             });
-            
-            // 按下Enter鍵也可以搜尋
+// 按下Enter鍵也可以搜尋
             customSearchEl.addEventListener('keyup', function(event) {
                 if (event.key === 'Enter') {
                     btnSearch.click();
                 }
             });
-            
-            // 初始化頁面時載入資料
+
+// 初始化頁面時載入資料
             fetchTenderData();
         });
     </script>
