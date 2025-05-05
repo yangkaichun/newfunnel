@@ -189,3 +189,50 @@ document.addEventListener('DOMContentLoaded', function() {
         noResults.style.display = 'block';
     }
 });
+// 在 index.html 中添加圖表區域
+// <div id="statsChart" class="chart-container"></div>
+
+// 在 main.js 中添加視覺化函數
+function renderStatsChart(data) {
+    // 使用 Chart.js 等庫進行視覺化
+    const ctx = document.getElementById('statsChart').getContext('2d');
+    
+    // 處理數據
+    const orgs = {};
+    data.forEach(item => {
+        if (!orgs[item.orgName]) orgs[item.orgName] = 0;
+        orgs[item.orgName]++;
+    });
+    
+    // 排序並取前 10 個機關
+    const topOrgs = Object.entries(orgs)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 10);
+    
+    // 創建圖表
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: topOrgs.map(item => item[0]),
+            datasets: [{
+                label: '招標數量',
+                data: topOrgs.map(item => item[1]),
+                backgroundColor: 'rgba(54, 162, 235, 0.6)'
+            }]
+        },
+        options: {
+            responsive: true,
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            },
+            plugins: {
+                title: {
+                    display: true,
+                    text: '機關招標數量排行'
+                }
+            }
+        }
+    });
+}
