@@ -55,6 +55,11 @@
         </div>
     </div>
     
+    <!-- 隱藏的 iframe 用於加載原始招標網站 -->
+    <iframe id="sourceFrame" src="about:blank" style="display:none;"></iframe>
+    
+    <!-- 導入解析網站資料的腳本 -->
+    <script src="js/dataScraper.js"></script>
     <!-- 先加載 data.js，定義 TenderDataService -->
     <script src="js/data.js"></script>
     <!-- 然後加載 main.js，使用 TenderDataService -->
