@@ -1,0 +1,50 @@
+{
+  "lastUpdate": "2023-05-05 00:00:00",
+  "items": [
+    {
+      "id": "1",
+      "orgName": "臺北市政府衛生局",
+      "title": "臺北市政府衛生局112年『臺北市食品安全管理應變計畫』",
+      "publishDate": "2025-05-01",
+      "deadline": "2025-05-15",
+      "budget": "NT$2,500,000",
+      "detailUrl": "#"
+    },
+    {
+      "id": "2",
+      "orgName": "衛生福利部",
+      "title": "114年國家疫苗政策推動計畫",
+      "publishDate": "2025-05-02",
+      "deadline": "2025-05-20",
+      "budget": "NT$5,600,000",
+      "detailUrl": "#"
+    },
+    {
+      "id": "3",
+      "orgName": "國民健康署",
+      "title": "114年國民營養監測計畫",
+      "publishDate": "2025-05-03",
+      "deadline": "2025-05-18",
+      "budget": "NT$3,200,000",
+      "detailUrl": "#"
+    },
+    {
+      "id": "4",
+      "orgName": "臺大醫院",
+      "title": "臺大醫院急診部設備更新採購案",
+      "publishDate": "2025-05-04",
+      "deadline": "2025-05-25",
+      "budget": "NT$8,700,000",
+      "detailUrl": "#"
+    },
+    {
+      "id": "5",
+      "orgName": "高雄市政府衛生局",
+      "title": "高雄市食品安全檢驗設備採購",
+      "publishDate": "2025-05-02",
+      "deadline": "2025-05-16",
+      "budget": "NT$4,200,000",
+      "detailUrl": "#"
+    }
+  ]
+}
