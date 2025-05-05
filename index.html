@@ -5,6 +5,45 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>政府採購招標資訊查詢系統</title>
     <link rel="stylesheet" href="css/style.css">
+    <!-- 在 index.html 中的 header 區域添加 -->
+<div class="header">
+    <h1>政府採購招標資訊查詢系統</h1>
+    <div class="actions">
+        <div class="update-info">最後更新時間: <span id="lastUpdate">載入中...</span></div>
+        <a href="update.html" class="admin-link" title="更新招標資訊">管理員更新</a>
+    </div>
+</div>
+
+<!-- 添加對應的 CSS -->
+<style>
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+}
+
+.update-info {
+    font-size: 14px;
+    color: #666;
+    margin-right: 15px;
+}
+
+.admin-link {
+    font-size: 12px;
+    color: #999;
+    text-decoration: none;
+}
+
+.admin-link:hover {
+    text-decoration: underline;
+}
+</style>
 </head>
 <body>
     <div class="container">
