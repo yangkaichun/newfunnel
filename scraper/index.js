@@ -12,7 +12,7 @@ const DATA_FILE = path.join(DATA_DIR, 'tenderData.json');
 fs.ensureDirSync(DATA_DIR);
 
 // 政府採購招標網站URL
-const TARGET_URL = 'https://web.pcc.gov.tw/prkms/tender/common/basic/readTenderBasic';
+const TARGET_URL = 'https://web.pcc.gov.tw/prkms/today/common/todayTender';
 
 // 主要爬蟲函數
 async function scrapeData() {
