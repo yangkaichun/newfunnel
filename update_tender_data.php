@@ -1,6 +1,9 @@
 <?php
 // update_tender_data.php - 直接爬取招標網站並更新 JSON 數據
 
+// 設置正確的內容類型
+header('Content-Type: text/html; charset=utf-8');
+
 // 設置執行時間上限 (5分鐘)
 set_time_limit(300);
 
