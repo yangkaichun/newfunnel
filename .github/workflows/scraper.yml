@@ -1,0 +1,42 @@
+name: 招標資訊爬蟲
+
+on:
+  schedule:
+    # 每天台灣時間早上 6 點執行 (UTC+8，即 UTC 時間 22:00)
+    - cron: '0 22 * * *'
+  workflow_dispatch:  # 允許手動觸發
+
+jobs:
+  scrape:
+    runs-on: ubuntu-latest
+    steps:
+      - name: 檢出程式碼
+        uses: actions/checkout@v2
+
+      - name: 設定 Node.js 環境
+        uses: actions/setup-node@v2
+        with:
+          node-version: '16'
+
+      - name: 安裝依賴
+        run: npm ci
+
+      - name: 安裝 Puppeteer 相依套件
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y chromium-browser
+
+      - name: 執行爬蟲
+        run: node scraper/index.js
+        env:
+          NODE_ENV: production
+          PUPPETEER_SKIP_CHROMIUM_DOWNLOAD: true
+          PUPPETEER_EXECUTABLE_PATH: /usr/bin/chromium-browser
+
+      - name: 提交更新的數據
+        run: |
+          git config --global user.name 'GitHub Actions Bot'
+          git config --global user.email 'actions@github.com'
+          git add data/tenderData.json
+          git diff --quiet && git diff --staged --quiet || git commit -m "更新招標資訊數據 [自動化]"
+          git push
