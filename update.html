@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>更新招標資訊 - 政府採購招標資訊查詢系統</title>
+    <style>
+        body {
+            font-family: "Microsoft JhengHei", Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #333;
+            margin-top: 0;
+        }
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-bottom: 20px;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .info {
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #e7f3fe;
+            border-left: 5px solid #2196F3;
+        }
+        .warning {
+            margin: 20px 0;
+            padding: 10px;
+            background-color: #fff3cd;
+            border-left: 5px solid #ffc107;
+        }
+        #updateFrame {
+            width: 100%;
+            height: 400px;
+            border: 1px solid #ddd;
+            margin-top: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>更新招標資訊</h1>
+        
+        <p>點擊下面的按鈕從政府採購招標網站更新最新的招標資訊。</p>
+        
+        <div class="info">
+            <strong>提示：</strong> 更新過程可能需要 30-60 秒，請耐心等待。
+        </div>
+        
+        <div class="warning">
+            <strong>注意：</strong> 更新時請勿關閉此頁面或重新整理，以免中斷更新過程。
+        </div>
+        
+        <button class="btn" id="updateBtn">開始更新招標資訊</button>
+        
+        <a href="index.html">返回查詢系統</a>
+        
+        <iframe id="updateFrame" name="updateFrame"></iframe>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const updateBtn = document.getElementById('updateBtn');
+            const updateFrame = document.getElementById('updateFrame');
+            
+            updateBtn.addEventListener('click', function() {
+                updateBtn.disabled = true;
+                updateBtn.textContent = '更新中...';
+                updateFrame.style.display = 'block';
+                updateFrame.src = 'update_tender_data.php';
+                
+                // 監聽 iframe 載入完成事件
+                updateFrame.onload = function() {
+                    updateBtn.disabled = false;
+                    updateBtn.textContent = '再次更新';
+                };
+            });
+        });
+    </script>
+</body>
+</html>
