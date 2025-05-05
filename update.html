@@ -56,98 +56,27 @@
         .back-link:hover {
             text-decoration: underline;
         }
-        #loadingMessage {
-            display: none;
-            padding: 20px;
-            background-color: #e8f5e9;
-            border-left: 5px solid #4caf50;
-            margin: 20px 0;
-            text-align: center;
-        }
-        .spinner {
-            border: 4px solid rgba(0, 0, 0, 0.1);
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            border-left-color: #09f;
-            animation: spin 1s linear infinite;
-            display: inline-block;
-            vertical-align: middle;
-            margin-right: 10px;
-        }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>更新招標資訊</h1>
         
-        <p>點擊下面的按鈕從政府採購招標網站更新最新的招標資訊。</p>
+        <p>由於此網站託管在 GitHub Pages，無法直接執行 PHP 程式。我們使用 GitHub Actions 來自動更新數據。</p>
         
         <div class="info">
-            <strong>提示：</strong> 更新過程可能需要 30-60 秒，請耐心等待。
+            <strong>自動更新：</strong> 系統每天早上 6 點自動從政府採購網站更新招標資訊。
         </div>
         
         <div class="warning">
-            <strong>注意：</strong> 更新時請勿關閉此頁面或重新整理，以免中斷更新過程。
+            <strong>手動更新：</strong> 若需立即更新，請前往 GitHub 儲存庫，手動觸發工作流程。
         </div>
-
-        <form id="updateForm" action="update_tender_data.php" method="post">
-            <button type="button" class="btn" id="updateBtn">開始更新招標資訊</button>
-        </form>
         
-        <div id="loadingMessage">
-            <div class="spinner"></div> 
-            <span>正在更新招標資訊，請稍候...</span>
-        </div>
-
-        <div id="resultContainer"></div>
+        <a href="https://github.com/您的用戶名/您的儲存庫名/actions/workflows/update_data.yml" target="_blank" class="btn">前往 GitHub 手動觸發更新</a>
+        
+        <p>最後更新時間可在首頁查看。手動更新後，數據將在幾分鐘內更新。</p>
         
         <a href="index.html" class="back-link">返回查詢系統</a>
     </div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const updateBtn = document.getElementById('updateBtn');
-            const loadingMessage = document.getElementById('loadingMessage');
-            const resultContainer = document.getElementById('resultContainer');
-            
-            updateBtn.addEventListener('click', function() {
-                // 顯示載入中訊息
-                updateBtn.disabled = true;
-                loadingMessage.style.display = 'block';
-                resultContainer.innerHTML = '';
-                
-                // 使用 fetch API 代替表單提交
-                fetch('update_tender_data.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    }
-                })
-                .then(response => response.text())
-                .then(html => {
-                    // 顯示結果
-                    loadingMessage.style.display = 'none';
-                    resultContainer.innerHTML = html;
-                    updateBtn.disabled = false;
-                    updateBtn.textContent = '再次更新';
-                })
-                .catch(error => {
-                    // 處理錯誤
-                    loadingMessage.style.display = 'none';
-                    resultContainer.innerHTML = `
-                        <div style="padding: 10px; background-color: #f8d7da; color: #721c24; border-left: 5px solid #dc3545; margin: 20px 0;">
-                            <strong>更新失敗！</strong> 發生錯誤: ${error.message}
-                        </div>
-                    `;
-                    updateBtn.disabled = false;
-                });
-            });
-        });
-    </script>
 </body>
 </html>
