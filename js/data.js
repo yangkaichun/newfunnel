@@ -1,4 +1,4 @@
-// js/data.js
+// data.js
 // 使用立即執行函數確保變數不污染全局空間
 (function() {
     // 定義全局可訪問的 TenderDataService 類
@@ -10,6 +10,37 @@
             this.itemsPerPage = 10;
             this.currentSort = { field: null, ascending: true };
             this.lastUpdate = '';
+            
+            // 將實例保存在全局變數中，供 dataScraper.js 訪問
+            window.tenderDataService = this;
+        }
+        
+        // 更新數據方法 - 供 dataScraper.js 調用
+        updateData(data) {
+            console.log('TenderDataService: 更新數據');
+            this.originalData = data.items || [];
+            this.lastUpdate = data.lastUpdate || new Date().toLocaleString();
+            this.filteredData = [...this.originalData];
+            
+            // 觸發數據更新事件
+            const event = new CustomEvent('tenderDataUpdated', {
+                detail: {
+                    items: this.getPageData(),
+                    total: this.filteredData.length,
+                    pages: Math.ceil(this.filteredData.length / this.itemsPerPage),
+                    currentPage: this.currentPage,
+                    lastUpdate: this.lastUpdate
+                }
+            });
+            document.dispatchEvent(event);
+            
+            return {
+                items: this.getPageData(),
+                total: this.filteredData.length,
+                pages: Math.ceil(this.filteredData.length / this.itemsPerPage),
+                currentPage: this.currentPage,
+                lastUpdate: this.lastUpdate
+            };
         }
         
         // 載入數據
