@@ -1,5 +1,14 @@
-// 主要前端邏輯
+// main.js
 document.addEventListener('DOMContentLoaded', function() {
+    // 確保 TenderDataService 已經定義
+    if (typeof TenderDataService !== 'function') {
+        console.error('TenderDataService 未被定義，請確保 data.js 已正確加載');
+        document.getElementById('noResults').textContent = 'TenderDataService 未被定義，系統無法正常運作';
+        document.getElementById('noResults').style.display = 'block';
+        document.getElementById('loadingIndicator').style.display = 'none';
+        return;
+    }
+    
     const dataService = new TenderDataService();
     const tbody = document.getElementById('tenderData');
     const loadingIndicator = document.getElementById('loadingIndicator');
@@ -79,7 +88,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         try {
             const result = await dataService.loadData();
-            lastUpdateElement.textContent = result.lastUpdate;
+            
+            if (result.lastUpdate) {
+                lastUpdateElement.textContent = result.lastUpdate;
+            }
             
             if (result.error) {
                 showError(result.error);
@@ -100,7 +112,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function updateTable(items) {
         tbody.innerHTML = '';
         
-        if (items.length === 0) {
+        if (!items || items.length === 0) {
             noResults.style.display = 'block';
             return;
         }
@@ -108,15 +120,17 @@ document.addEventListener('DOMContentLoaded', function() {
         noResults.style.display = 'none';
         
         items.forEach((item, index) => {
+            if (!item) return;
+            
             const tr = document.createElement('tr');
             tr.innerHTML = `
-                <td>${item.id}</td>
-                <td>${item.orgName}</td>
-                <td>${item.title}</td>
-                <td>${item.publishDate}</td>
-                <td>${item.deadline}</td>
-                <td>${item.budget}</td>
-                <td><a href="${item.detailUrl}" target="_blank" class="detail-btn">詳細</a></td>
+                <td>${item.id || ''}</td>
+                <td>${item.orgName || ''}</td>
+                <td>${item.title || ''}</td>
+                <td>${item.publishDate || ''}</td>
+                <td>${item.deadline || ''}</td>
+                <td>${item.budget || ''}</td>
+                <td><a href="${item.detailUrl || '#'}" target="_blank" class="detail-btn">詳細</a></td>
             `;
             tbody.appendChild(tr);
         });
@@ -127,10 +141,16 @@ document.addEventListener('DOMContentLoaded', function() {
         showLoading(true);
         
         setTimeout(() => {
-            const result = dataService.filterData(keyword);
-            updateTable(result.items);
-            updatePagination(result.pages, result.currentPage);
-            showLoading(false);
+            try {
+                const result = dataService.filterData(keyword);
+                updateTable(result.items);
+                updatePagination(result.pages, result.currentPage);
+            } catch (error) {
+                showError('篩選數據時發生錯誤');
+                console.error('篩選錯誤:', error);
+            } finally {
+                showLoading(false);
+            }
         }, 200); // 模擬加載延遲
     }
     
@@ -138,7 +158,7 @@ document.addEventListener('DOMContentLoaded', function() {
     function updatePagination(pages, currentPage) {
         pagination.innerHTML = '';
         
-        if (pages <= 1) return;
+        if (!pages || pages <= 1) return;
         
         // 上一頁按鈕
         if (currentPage > 1) {
@@ -180,59 +200,16 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 顯示/隱藏載入中狀態
     function showLoading(show) {
-        loadingIndicator.style.display = show ? 'block' : 'none';
+        if (loadingIndicator) {
+            loadingIndicator.style.display = show ? 'block' : 'none';
+        }
     }
     
     // 顯示錯誤訊息
     function showError(message) {
-        noResults.textContent = message;
-        noResults.style.display = 'block';
+        if (noResults) {
+            noResults.textContent = message;
+            noResults.style.display = 'block';
+        }
     }
 });
-// 在 index.html 中添加圖表區域
-// <div id="statsChart" class="chart-container"></div>
-
-// 在 main.js 中添加視覺化函數
-function renderStatsChart(data) {
-    // 使用 Chart.js 等庫進行視覺化
-    const ctx = document.getElementById('statsChart').getContext('2d');
-    
-    // 處理數據
-    const orgs = {};
-    data.forEach(item => {
-        if (!orgs[item.orgName]) orgs[item.orgName] = 0;
-        orgs[item.orgName]++;
-    });
-    
-    // 排序並取前 10 個機關
-    const topOrgs = Object.entries(orgs)
-        .sort((a, b) => b[1] - a[1])
-        .slice(0, 10);
-    
-    // 創建圖表
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: topOrgs.map(item => item[0]),
-            datasets: [{
-                label: '招標數量',
-                data: topOrgs.map(item => item[1]),
-                backgroundColor: 'rgba(54, 162, 235, 0.6)'
-            }]
-        },
-        options: {
-            responsive: true,
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            },
-            plugins: {
-                title: {
-                    display: true,
-                    text: '機關招標數量排行'
-                }
-            }
-        }
-    });
-}
