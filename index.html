@@ -1,581 +1,555 @@
-     
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>政府採購招標資訊篩選系統 當日案件 BY KC (功能強化版)</title>
+    <title>政府採購網篩選器</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
-    <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/zh-tw.js"></script>
     <style>
-        body {
-            font-family: Arial, 'Microsoft JhengHei', sans-serif;
-        }
-        .loading {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 20px 0;
-        }
-        .loading-spinner {
+        .loader {
             border: 5px solid #f3f3f3;
             border-top: 5px solid #3498db;
             border-radius: 50%;
             width: 50px;
             height: 50px;
-            animation: spin 1s linear infinite;
+            animation: spin 2s linear infinite;
+            margin: 20px auto;
         }
+        
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
+        
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .data-table th, .data-table td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        
+        .data-table th {
+            background-color: #f2f2f2;
+            position: sticky;
+            top: 0;
+        }
+        
+        .data-table tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        .data-table tr:hover {
+            background-color: #f1f1f1;
+        }
+        
         @media print {
-            .no-print {
-                display: none;
-            }
             body {
                 width: 100%;
                 margin: 0;
                 padding: 0;
             }
-            .container {
-                width: 100%;
-                max-width: none;
+            
+            .no-print {
+                display: none !important;
             }
-        }
-        table {
-            page-break-inside: avoid;
-        }
-        .pagination {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            margin: 20px 0;
-        }
-        .pagination button {
-            margin: 5px;
-        }
-        .flatpickr-input {
-            background-color: white;
         }
     </style>
 </head>
-<body class="bg-gray-100 min-h-screen">
-    <div class="container mx-auto px-4 py-8">
-        <h1 class="text-3xl font-bold text-center mb-8">政府採購招標資訊篩選系統 當日案件 BY KC (功能強化版)</h1>
-        <a href="indexV2.html">V2版</a2>
-        <!-- 選單區塊 -->
-        <div class="bg-white rounded-lg shadow-md p-4 mb-6 no-print">
-            <div class="flex flex-wrap justify-center mb-4">
-                <button id="btn-all" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-1 focus:outline-none focus:shadow-outline">
-                    全部資料
-                </button>
-                <button id="btn-health-bureau" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-1 focus:outline-none focus:shadow-outline">
-                    衛生局
-                </button>
-                <button id="btn-mohw" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-1 focus:outline-none focus:shadow-outline">
-                    衛生福利部
-                </button>
-                <button id="btn-hpa" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-1 focus:outline-none focus:shadow-outline">
-                    國民健康署
-                </button>
-                <button id="btn-hospital" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded m-1 focus:outline-none focus:shadow-outline">
-                    醫院
+<body class="bg-gray-100 p-4">
+    <div class="container mx-auto bg-white p-6 rounded-lg shadow-lg">
+        <h1 class="text-3xl font-bold mb-6 text-center text-blue-700">政府採購網篩選器</h1>
+        
+        <!-- Navigation Menu -->
+        <div class="flex flex-wrap justify-center gap-2 mb-6 no-print">
+            <button id="all-btn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                全部資料
+            </button>
+            <button id="health-bureau-btn" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                衛生局
+            </button>
+            <button id="mohw-btn" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                衛生福利部
+            </button>
+            <button id="hpa-btn" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                國民健康署
+            </button>
+            <button id="hospital-btn" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">
+                醫院
+            </button>
+        </div>
+        
+        <!-- Search and Sort Controls -->
+        <div class="flex flex-wrap justify-between items-center mb-6 no-print">
+            <div class="flex items-center gap-2">
+                <input id="custom-search" type="text" placeholder="輸入關鍵字..."
+                    class="border border-gray-300 p-2 rounded" />
+                <button id="search-btn" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">
+                    搜尋
                 </button>
             </div>
             
-            <div class="flex flex-wrap items-center justify-center mb-4">
-                <div class="flex items-center mr-4">
-                    <label for="date-filter" class="mr-2">公告日期:</label>
-                    <input id="date-filter" type="text" placeholder="選擇日期" class="border border-gray-300 rounded px-4 py-2 w-32 sm:w-40">
-                    <button id="btn-clear-date" class="ml-2 bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded text-sm focus:outline-none focus:shadow-outline">
-                        清除
-                    </button>
-                </div>
-                <div class="flex">
-                    <input id="custom-search" type="text" placeholder="輸入機關名稱關鍵字" class="border border-gray-300 rounded px-4 py-2 mx-2 flex-grow max-w-md">
-                    <button id="btn-search" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded m-1 focus:outline-none focus:shadow-outline">
-                        搜尋
-                    </button>
-                </div>
-            </div>
-            
-            <div class="flex flex-wrap items-center justify-center">
-                <span class="mr-2">每頁顯示:</span>
-                <select id="items-per-page" class="border border-gray-300 rounded px-2 py-1">
-                    <option value="10">10</option>
-                    <option value="20">20</option>
-                    <option value="50">50</option>
-                    <option value="100">100</option>
-                    <option value="0">全部顯示</option>
+            <div class="flex items-center gap-2 mt-2 sm:mt-0">
+                <span class="text-gray-700">排序方式:</span>
+                <select id="sort-by" class="border border-gray-300 p-2 rounded">
+                    <option value="default">預設排序</option>
+                    <option value="bidDate">招標日期</option>
+                    <option value="deadlineDate">截標日期</option>
+                    <option value="amount">金額</option>
                 </select>
-                <div class="ml-4">
-                    <button id="btn-paginated" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-4 rounded m-1 focus:outline-none focus:shadow-outline">
-                        分頁顯示
-                    </button>
-                    <button id="btn-all-data" class="bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-4 rounded m-1 focus:outline-none focus:shadow-outline">
-                        全部顯示 (適合PDF)
-                    </button>
-                </div>
+                <button id="sort-btn" class="bg-purple-500 hover:bg-purple-700 text-white font-bold py-2 px-4 rounded">
+                    排序
+                </button>
             </div>
         </div>
         
-        <!-- 資料顯示區 -->
-        <div class="bg-white rounded-lg shadow-md p-4">
-            <div id="filter-info" class="font-bold text-xl mb-4 text-center">載入全部資料中...</div>
-            
-            <div id="loading" class="loading">
-                <div class="loading-spinner"></div>
-            </div>
-            
-            <div id="error-message" class="hidden bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
-                無法直接從網站獲取資料，請手動開啟 <a href="https://web.pcc.gov.tw/prkms/today/common/todayTender" class="underline text-blue-600" target="_blank">政府採購網</a> 查看今日招標資訊。
-            </div>
-            
-            <div id="result-info" class="text-gray-600 mb-4 text-center"></div>
-            
-            <div class="overflow-x-auto">
-                <table class="min-w-full bg-white">
-                    <thead>
-                        <tr class="bg-gray-200 text-gray-700">
-                            <th class="py-2 px-4 border-b text-left">編號</th>
-                            <th class="py-2 px-4 border-b text-left">機關名稱</th>
-                            <th class="py-2 px-4 border-b text-left">標案名稱</th>
-                            <th class="py-2 px-4 border-b text-left">招標方式</th>
-                            <th class="py-2 px-4 border-b text-left">公告日期</th>
-                            <th class="py-2 px-4 border-b text-left">截止投標</th>
-                            <th class="py-2 px-4 border-b text-left">預算金額</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tender-data">
-                        <!-- 這裡將會動態填入資料 -->
-                    </tbody>
-                </table>
-            </div>
-            
-            <div id="pagination" class="pagination no-print"></div>
+        <!-- Status Display -->
+        <div id="status" class="text-center text-gray-700 mb-4">
+            載入中...
         </div>
         
-        <div class="text-center text-gray-500 mt-8 text-sm">
-            資料來源: <a href="https://web.pcc.gov.tw/prkms/today/common/todayTender" class="underline" target="_blank">政府電子採購網</a>
+        <!-- Loading Spinner -->
+        <div id="loader" class="loader"></div>
+        
+        <!-- Results Counter -->
+        <div id="results-count" class="text-right text-gray-700 mb-2 hidden">
+            共找到 <span id="count">0</span> 筆資料
         </div>
         
-        <div class="text-center text-green-600 mt-4 text-sm font-bold">
-            功能強化版: 此系統已優化，能夠獲取並顯示完整的政府採購招標資訊，無筆數限制，並新增日期篩選功能
+        <!-- Data Table -->
+        <div class="overflow-x-auto">
+            <table id="data-table" class="data-table hidden">
+                <thead>
+                    <tr>
+                        <th>序號</th>
+                        <th>標案名稱</th>
+                        <th>機關名稱</th>
+                        <th>招標方式</th>
+                        <th>招標日期</th>
+                        <th>截標日期</th>
+                        <th>預算金額</th>
+                        <th>詳細資料</th>
+                    </tr>
+                </thead>
+                <tbody id="data-body">
+                    <!-- Data will be inserted here via JavaScript -->
+                </tbody>
+            </table>
         </div>
+        
+        <noscript>
+            <div class="text-center text-red-600 p-4 border border-red-300 rounded mt-4">
+                此頁面需要啟用 JavaScript 才能正常運作。請啟用您瀏覽器的 JavaScript 功能。
+            </div>
+        </noscript>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const loadingEl = document.getElementById('loading');
-            const errorMessageEl = document.getElementById('error-message');
-            const tenderDataEl = document.getElementById('tender-data');
-            const filterInfoEl = document.getElementById('filter-info');
-            const resultInfoEl = document.getElementById('result-info');
-            const customSearchEl = document.getElementById('custom-search');
-            const paginationEl = document.getElementById('pagination');
-            const itemsPerPageEl = document.getElementById('items-per-page');
-            const dateFilterEl = document.getElementById('date-filter');
-            const btnClearDateEl = document.getElementById('btn-clear-date');
+        // Global variables
+        let allData = [];
+        let filteredData = [];
+        let currentFilter = '';
+        
+        // DOM Elements
+        const loader = document.getElementById('loader');
+        const status = document.getElementById('status');
+        const dataTable = document.getElementById('data-table');
+        const dataBody = document.getElementById('data-body');
+        const resultsCount = document.getElementById('results-count');
+        const countSpan = document.getElementById('count');
+        
+        // Buttons
+        const allBtn = document.getElementById('all-btn');
+        const healthBureauBtn = document.getElementById('health-bureau-btn');
+        const mohwBtn = document.getElementById('mohw-btn');
+        const hpaBtn = document.getElementById('hpa-btn');
+        const hospitalBtn = document.getElementById('hospital-btn');
+        const searchBtn = document.getElementById('search-btn');
+        const sortBtn = document.getElementById('sort-btn');
+        
+        // Input elements
+        const customSearch = document.getElementById('custom-search');
+        const sortBy = document.getElementById('sort-by');
+        
+        // Initialize page - Load data when page loads
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchData();
             
-            // 按鈕元素
-            const btnAll = document.getElementById('btn-all');
-            const btnHealthBureau = document.getElementById('btn-health-bureau');
-            const btnMohw = document.getElementById('btn-mohw');
-            const btnHpa = document.getElementById('btn-hpa');
-            const btnHospital = document.getElementById('btn-hospital');
-            const btnSearch = document.getElementById('btn-search');
-            const btnPaginated = document.getElementById('btn-paginated');
-            const btnAllData = document.getElementById('btn-all-data');
+            // Add event listeners to buttons
+            allBtn.addEventListener('click', () => filterData(''));
+            healthBureauBtn.addEventListener('click', () => filterData('衛生局'));
+            mohwBtn.addEventListener('click', () => filterData('衛生福利部'));
+            hpaBtn.addEventListener('click', () => filterData('國民健康署'));
+            hospitalBtn.addEventListener('click', () => filterData('醫院'));
             
-            // 初始化日期選擇器
-            const datePickerOptions = {
-                locale: 'zh_tw',
-                dateFormat: 'Y/m/d',
-                maxDate: 'today',
-                onChange: function(selectedDates, dateStr) {
-                    if(dateStr) {
-                        applyFilters();
-                    }
-                }
-            };
-            const datePicker = flatpickr(dateFilterEl, datePickerOptions);
-            
-            // 清除日期按鈕事件
-            btnClearDateEl.addEventListener('click', function() {
-                datePicker.clear();
-                applyFilters();
+            searchBtn.addEventListener('click', () => {
+                const keyword = customSearch.value.trim();
+                filterData(keyword);
             });
             
-            // 儲存所有招標資料和當前篩選資料
-            let allTenderData = [];
-            let currentFilteredData = [];
-            let currentPage = 1;
-            let itemsPerPage = parseInt(itemsPerPageEl.value);
-            let isPaginated = true;
-            let currentKeyword = '';
+            customSearch.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    const keyword = customSearch.value.trim();
+                    filterData(keyword);
+                }
+            });
             
-            // 模擬從政府採購網獲取的資料
-            function fetchTenderData() {
-                loadingEl.classList.remove('hidden');
-                errorMessageEl.classList.add('hidden');
-                
-                // 模擬API請求延遲
-                setTimeout(() => {
-                    try {
-                        // 實際專案中，這裡應該使用fetch獲取資料
-                        // fetch('https://web.pcc.gov.tw/prkms/today/common/todayTender')
-                        //     .then(response => response.text())
-                        //     .then(html => {
-                        //         解析HTML內容，提取招標資訊
-                        //     })
-                        //     .catch(error => {
-                        //         console.error('獲取資料失敗:', error);
-                        //         errorMessageEl.classList.remove('hidden');
-                        //     });
-                        
-                        // 由於無法直接從政府採購網獲取資料，這裡使用模擬資料
-                        allTenderData = generateSampleData(300); // 增加測試資料筆數到300筆
-                        
-                        // 設置當前過濾資料為所有資料
-                        currentFilteredData = [...allTenderData];
-                        
-                        // 顯示所有資料
-                        updateDisplay();
-                        
-                    } catch (error) {
-                        console.error('處理資料失敗:', error);
-                        errorMessageEl.classList.remove('hidden');
-                    } finally {
-                        loadingEl.classList.add('hidden');
-                    }
-                }, 1000);
-            }
+            sortBtn.addEventListener('click', sortData);
+        });
+        
+        // Fetch data from government procurement website
+        async function fetchData() {
+            showLoading(true);
+            status.textContent = '正在從政府採購網抓取資料...';
             
-            // 生成模擬資料
-            function generateSampleData(count) {
-                const agencies = [
-                    '臺北市政府衛生局', '新北市政府衛生局', '桃園市政府衛生局',
-                    '衛生福利部', '衛生福利部桃園醫院', '衛生福利部臺北醫院',
-                    '國民健康署', '國民健康署南區管理中心',
-                    '臺大醫院', '馬偕醫院', '長庚醫院', '三軍總醫院',
-                    '臺中市政府', '高雄市政府', '國防部', '教育部'
+            try {
+                // Using a CORS proxy to fetch data
+                // Try multiple proxy services in case one fails
+                const proxyUrls = [
+                    'https://corsproxy.io/?',
+                    'https://api.allorigins.win/raw?url=',
+                    'https://cors-anywhere.herokuapp.com/'
                 ];
                 
-                const methods = ['公開招標', '限制性招標', '公開評選', '公開取得報價單'];
+                const targetUrl = 'https://web.pcc.gov.tw/prkms/today/common/todayTender';
+                let html = '';
+                let success = false;
                 
-                const sampleData = [];
-                for (let i = 1; i <= count; i++) {
-                    const agency = agencies[Math.floor(Math.random() * agencies.length)];
-                    const method = methods[Math.floor(Math.random() * methods.length)];
-                    const budget = Math.floor(Math.random() * 10000000) + 100000;
-                    
-                    const now = new Date();
-                    
-                    // 生成公告日期（過去30天內）
-                    const publishDate = new Date(now);
-                    publishDate.setDate(now.getDate() - Math.floor(Math.random() * 30));
-                    const publishDateStr = `${publishDate.getFullYear()}/${(publishDate.getMonth()+1).toString().padStart(2, '0')}/${publishDate.getDate().toString().padStart(2, '0')}`;
-                    
-                    // 生成截止日期（未來30天內）
-                    const deadline = new Date(now);
-                    deadline.setDate(now.getDate() + Math.floor(Math.random() * 30) + 1);
-                    const deadlineStr = `${deadline.getFullYear()-1911}/${(deadline.getMonth()+1).toString().padStart(2, '0')}/${deadline.getDate().toString().padStart(2, '0')}`;
-                    
-                    // 生成唯一標案編號
-                    const id = `113${String(i).padStart(6, '0')}`;
-                    
-                    // 生成案件原始來源網址
-                    const sourceUrl = `https://web.pcc.gov.tw/tps/pss/tender.do?method=goToMain&searchMode=common&searchType=basic&method=search&isCondition=Y&pkAtmMain=${id}`;
-                    
-                    sampleData.push({
-                        id: id,
-                        agency: agency,
-                        title: `${agency}${Math.random() > 0.5 ? '醫療設備' : '資訊系統'}採購案(${i})`,
-                        method: method,
-                        publishDate: publishDateStr,
-                        deadline: deadlineStr,
-                        budget: budget.toLocaleString(),
-                        sourceUrl: sourceUrl
+                // Try each proxy until successful
+                for (const proxyUrl of proxyUrls) {
+                    try {
+                        const response = await fetch(proxyUrl + encodeURIComponent(targetUrl));
+                        
+                        if (response.ok) {
+                            html = await response.text();
+                            success = true;
+                            break;
+                        }
+                    } catch (err) {
+                        console.warn(`Proxy ${proxyUrl} failed:`, err);
+                    }
+                }
+                
+                if (!success) {
+                    // If all proxies fail, try direct fetch (might still fail due to CORS)
+                    try {
+                        const response = await fetch(targetUrl);
+                        if (response.ok) {
+                            html = await response.text();
+                            success = true;
+                        }
+                    } catch (directErr) {
+                        console.warn('Direct fetch failed:', directErr);
+                    }
+                }
+                
+                if (!success) {
+                    throw new Error('無法從政府採購網取得資料');
+                }
+                
+                // Parse the HTML data
+                allData = parseHtmlData(html);
+                
+                // Display all data initially
+                filteredData = [...allData];
+                displayData(filteredData);
+                
+                status.textContent = '資料載入完成';
+                showLoading(false);
+                
+            } catch (error) {
+                console.error('Error fetching data:', error);
+                status.textContent = `發生錯誤: ${error.message}。使用示範資料...`;
+                
+                // Use sample data if fetching fails
+                allData = getSampleData();
+                filteredData = [...allData];
+                displayData(filteredData);
+                
+                showLoading(false);
+            }
+        }
+        
+        // Parse HTML data from the government procurement website
+        function parseHtmlData(html) {
+            const parser = new DOMParser();
+            const doc = parser.parseFromString(html, 'text/html');
+            
+            // Find all tables in the document
+            const tables = doc.querySelectorAll('table');
+            let tenderTable = null;
+            
+            // Find the table with tender data (looking for a table with relevant headers)
+            for (const table of tables) {
+                const headerText = table.textContent.toLowerCase();
+                if (headerText.includes('標案名稱') || 
+                    headerText.includes('機關名稱') || 
+                    headerText.includes('招標方式')) {
+                    tenderTable = table;
+                    break;
+                }
+            }
+            
+            if (!tenderTable) {
+                throw new Error('無法找到標案資料表格');
+            }
+            
+            const rows = tenderTable.querySelectorAll('tr');
+            const data = [];
+            let headerRow = true;
+            let nameIdx = 0, orgIdx = 1, methodIdx = 2, bidDateIdx = 3, deadlineDateIdx = 4, amountIdx = 5;
+            
+            // Process each row in the table
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                const cells = row.querySelectorAll('td, th');
+                
+                // Skip empty rows
+                if (cells.length < 6) continue;
+                
+                // Try to identify header row and column indices
+                if (headerRow) {
+                    for (let j = 0; j < cells.length; j++) {
+                        const cellText = cells[j].textContent.trim().toLowerCase();
+                        if (cellText.includes('標案名稱')) nameIdx = j;
+                        else if (cellText.includes('機關名稱')) orgIdx = j;
+                        else if (cellText.includes('招標方式')) methodIdx = j;
+                        else if (cellText.includes('招標日期')) bidDateIdx = j;
+                        else if (cellText.includes('截止日期') || cellText.includes('截標日期')) deadlineDateIdx = j;
+                        else if (cellText.includes('預算金額') || cellText.includes('金額')) amountIdx = j;
+                    }
+                    headerRow = false;
+                    continue;
+                }
+                
+                // Process data rows
+                const item = {
+                    id: data.length + 1,
+                    name: cells[nameIdx]?.textContent.trim() || '',
+                    organization: cells[orgIdx]?.textContent.trim() || '',
+                    method: cells[methodIdx]?.textContent.trim() || '',
+                    bidDate: cells[bidDateIdx]?.textContent.trim() || '',
+                    deadlineDate: cells[deadlineDateIdx]?.textContent.trim() || '',
+                    amount: parseAmount(cells[amountIdx]?.textContent.trim() || ''),
+                    detailLink: findLinkInCell(cells) || '#'
+                };
+                
+                data.push(item);
+            }
+            
+            return data;
+        }
+        
+        // Find link in table cell
+        function findLinkInCell(cells) {
+            for (const cell of cells) {
+                const link = cell.querySelector('a');
+                if (link && link.href) {
+                    return link.href;
+                }
+            }
+            return null;
+        }
+        
+        // Parse amount string to number
+        function parseAmount(amountStr) {
+            const num = amountStr.replace(/[^\d]/g, '');
+            return num ? parseInt(num) : 0;
+        }
+        
+        // Get sample data if fetching fails
+        function getSampleData() {
+            return [
+                {
+                    id: 1,
+                    name: '臺中市西區衛生所建置牙科設備財物採購案',
+                    organization: '臺中市西區衛生所',
+                    method: '公開取得報價單或企劃書',
+                    bidDate: '113/04/12',
+                    deadlineDate: '113/04/19',
+                    amount: 980000,
+                    detailLink: 'https://web.pcc.gov.tw/tps/main/pms/tps/atm/atmAwardAction.do?newEdit=false&searchMode=common&method=inquiryForPublic&pkAtmMain=53329124&tenderCaseNo=AU01-112-0038'
+                },
+                {
+                    id: 2,
+                    name: '113年度精神疾病嚴重病人強制住院及強制社區治療審查會委員出席費',
+                    organization: '衛生福利部',
+                    method: '限制性招標',
+                    bidDate: '113/04/10',
+                    deadlineDate: '113/12/31',
+                    amount: 560000,
+                    detailLink: 'https://web.pcc.gov.tw/tps/main/pms/tps/atm/atmAwardAction.do?newEdit=false&searchMode=common&method=inquiryForPublic&pkAtmMain=53329125&tenderCaseNo=A113054'
+                },
+                {
+                    id: 3,
+                    name: '113年度癌症篩檢與品質提升計畫:更新癌症篩檢治療追蹤資料庫功能',
+                    organization: '國民健康署',
+                    method: '限制性招標',
+                    bidDate: '113/04/15',
+                    deadlineDate: '113/04/22',
+                    amount: 1200000,
+                    detailLink: 'https://web.pcc.gov.tw/tps/main/pms/tps/atm/atmAwardAction.do?newEdit=false&searchMode=common&method=inquiryForPublic&pkAtmMain=53329126&tenderCaseNo=H1130401'
+                },
+                {
+                    id: 4,
+                    name: '113年度門診手術室消毒滅菌設備採購',
+                    organization: '臺北市立聯合醫院',
+                    method: '公開招標',
+                    bidDate: '113/04/08',
+                    deadlineDate: '113/04/24',
+                    amount: 3500000,
+                    detailLink: 'https://web.pcc.gov.tw/tps/main/pms/tps/atm/atmAwardAction.do?newEdit=false&searchMode=common&method=inquiryForPublic&pkAtmMain=53329127&tenderCaseNo=TP-113-058'
+                },
+                {
+                    id: 5,
+                    name: '113年醫院感染管制查核作業及查核委員相關事務',
+                    organization: '疾病管制署',
+                    method: '限制性招標',
+                    bidDate: '113/04/11',
+                    deadlineDate: '113/04/25',
+                    amount: 1800000,
+                    detailLink: 'https://web.pcc.gov.tw/tps/main/pms/tps/atm/atmAwardAction.do?newEdit=false&searchMode=common&method=inquiryForPublic&pkAtmMain=53329128&tenderCaseNo=CDC-113-025'
+                },
+                {
+                    id: 6,
+                    name: '113年度食品業者登錄平台系統維護',
+                    organization: '食品藥物管理署',
+                    method: '限制性招標',
+                    bidDate: '113/04/09',
+                    deadlineDate: '113/12/31',
+                    amount: 950000,
+                    detailLink: 'https://web.pcc.gov.tw/tps/main/pms/tps/atm/atmAwardAction.do?newEdit=false&searchMode=common&method=inquiryForPublic&pkAtmMain=53329129&tenderCaseNo=FDA-113-015'
+                },
+                {
+                    id: 7,
+                    name: '南投縣衛生局113年度行政大樓清潔維護',
+                    organization: '南投縣衛生局',
+                    method: '公開取得報價單或企劃書',
+                    bidDate: '113/04/10',
+                    deadlineDate: '113/04/20',
+                    amount: 750000,
+                    detailLink: 'https://web.pcc.gov.tw/tps/main/pms/tps/atm/atmAwardAction.do?newEdit=false&searchMode=common&method=inquiryForPublic&pkAtmMain=53329130&tenderCaseNo=NT-113-012'
+                }
+            ];
+        }
+        
+        // Filter data based on keyword
+        function filterData(keyword) {
+            currentFilter = keyword;
+            
+            if (!keyword) {
+                filteredData = [...allData];
+            } else {
+                filteredData = allData.filter(item => 
+                    item.organization.includes(keyword)
+                );
+            }
+            
+            displayData(filteredData);
+        }
+        
+        // Sort data
+        function sortData() {
+            const sortType = sortBy.value;
+            
+            switch (sortType) {
+                case 'bidDate':
+                    filteredData.sort((a, b) => {
+                        return compareDates(a.bidDate, b.bidDate);
                     });
-                }
-                return sampleData;
-            }
-            
-            // 更新顯示，包括分頁和資料
-            function updateDisplay() {
-                filterInfoEl.textContent = getFilterInfoText();
-                resultInfoEl.textContent = `共有 ${currentFilteredData.length} 筆招標資訊`;
-                
-                if (isPaginated && itemsPerPage > 0) {
-                    displayPaginatedData();
-                    updatePagination();
-                } else {
-                    displayAllData();
-                    paginationEl.innerHTML = '';
-                }
-            }
-            
-            // 獲取篩選資訊文字
-            function getFilterInfoText() {
-                const dateFilter = dateFilterEl.value;
-                const keywordFilter = currentKeyword;
-                
-                let filterTexts = [];
-                
-                if (dateFilter) {
-                    filterTexts.push(`公告日期: ${dateFilter}`);
-                }
-                
-                if (keywordFilter) {
-                    filterTexts.push(`關鍵字: ${keywordFilter}`);
-                }
-                
-                if (filterTexts.length > 0) {
-                    return `已篩選招標資料 - ${filterTexts.join(' | ')}`;
-                }
-                
-                return '全部招標資料';
-            }
-            
-            // 顯示當前分頁的資料
-            function displayPaginatedData() {
-                const startIndex = (currentPage - 1) * itemsPerPage;
-                const endIndex = startIndex + itemsPerPage;
-                const pageData = currentFilteredData.slice(startIndex, endIndex);
-                displayTenderData(pageData);
-            }
-            
-            // 顯示所有資料（不分頁）
-            function displayAllData() {
-                displayTenderData(currentFilteredData);
-            }
-            
-            // 更新分頁控制元件
-            function updatePagination() {
-                paginationEl.innerHTML = '';
-                
-                if (itemsPerPage <= 0) return;
-                
-                const totalPages = Math.ceil(currentFilteredData.length / itemsPerPage);
-                if (totalPages <= 1) return;
-                
-                // 上一頁按鈕
-                const prevBtn = document.createElement('button');
-                prevBtn.innerText = '上一頁';
-                prevBtn.className = 'bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-3 rounded';
-                prevBtn.disabled = currentPage === 1;
-                if (prevBtn.disabled) {
-                    prevBtn.classList.add('opacity-50', 'cursor-not-allowed');
-                }
-                prevBtn.addEventListener('click', () => {
-                    if (currentPage > 1) {
-                        currentPage--;
-                        updateDisplay();
-                    }
-                });
-                paginationEl.appendChild(prevBtn);
-                
-                // 頁碼按鈕
-                let startPage = Math.max(1, currentPage - 2);
-                let endPage = Math.min(totalPages, startPage + 4);
-                
-                // 調整確保總是顯示5個頁碼按鈕(如果有的話)
-                if (endPage - startPage < 4 && totalPages > 5) {
-                    if (startPage === 1) {
-                        endPage = Math.min(totalPages, 5);
-                    } else if (endPage === totalPages) {
-                        startPage = Math.max(1, totalPages - 4);
-                    }
-                }
-                
-                for (let i = startPage; i <= endPage; i++) {
-                    const pageBtn = document.createElement('button');
-                    pageBtn.innerText = i.toString();
-                    pageBtn.className = i === currentPage 
-                        ? 'bg-blue-500 text-white font-bold py-1 px-3 rounded'
-                        : 'bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-3 rounded';
-                    pageBtn.addEventListener('click', () => {
-                        currentPage = i;
-                        updateDisplay();
+                    break;
+                case 'deadlineDate':
+                    filteredData.sort((a, b) => {
+                        return compareDates(a.deadlineDate, b.deadlineDate);
                     });
-                    paginationEl.appendChild(pageBtn);
-                }
-                
-                // 下一頁按鈕
-                const nextBtn = document.createElement('button');
-                nextBtn.innerText = '下一頁';
-                nextBtn.className = 'bg-gray-300 hover:bg-gray-400 text-gray-800 font-bold py-1 px-3 rounded';
-                nextBtn.disabled = currentPage === totalPages;
-                if (nextBtn.disabled) {
-                    nextBtn.classList.add('opacity-50', 'cursor-not-allowed');
-                }
-                nextBtn.addEventListener('click', () => {
-                    if (currentPage < totalPages) {
-                        currentPage++;
-                        updateDisplay();
-                    }
-                });
-                paginationEl.appendChild(nextBtn);
-                
-                // 頁碼資訊
-                const pageInfo = document.createElement('span');
-                pageInfo.innerText = ` 第 ${currentPage} 頁，共 ${totalPages} 頁`;
-                pageInfo.className = 'ml-2 text-gray-600';
-                paginationEl.appendChild(pageInfo);
+                    break;
+                case 'amount':
+                    filteredData.sort((a, b) => b.amount - a.amount);
+                    break;
+                default:
+                    // Default sort by ID
+                    filteredData.sort((a, b) => a.id - b.id);
             }
             
-            // 顯示招標資料
-            function displayTenderData(data) {
-                tenderDataEl.innerHTML = '';
-                
-                if (data.length === 0) {
-                    tenderDataEl.innerHTML = `
-                        <tr>
-                            <td colspan="7" class="py-4 text-center text-gray-500">沒有符合條件的招標資訊</td>
-                        </tr>
-                    `;
-                    return;
+            displayData(filteredData);
+        }
+        
+        // Compare dates for sorting
+        function compareDates(dateA, dateB) {
+            // Convert Chinese dates to Date objects for comparison
+            // Assume format is like "113/04/01" (ROC year)
+            const parseDate = (dateStr) => {
+                const parts = dateStr.split('/');
+                if (parts.length === 3) {
+                    // Convert ROC year to Gregorian year (add 1911)
+                    const year = parseInt(parts[0]) + 1911;
+                    const month = parseInt(parts[1]) - 1; // JavaScript months are 0-based
+                    const day = parseInt(parts[2]);
+                    return new Date(year, month, day);
                 }
-                
-                data.forEach(item => {
-                    const row = document.createElement('tr');
-                    row.className = 'hover:bg-gray-100';
-                    row.innerHTML = `
-                        <td class="py-2 px-4 border-b">${item.id}</td>
-                        <td class="py-2 px-4 border-b">${item.agency}</td>
-                        <td class="py-2 px-4 border-b">
-                            <a href="${item.sourceUrl}" class="text-blue-600 hover:underline" target="_blank">
-                                ${item.title}
-                            </a>
-                        </td>
-                        <td class="py-2 px-4 border-b">${item.method}</td>
-                        <td class="py-2 px-4 border-b">${item.publishDate}</td>
-                        <td class="py-2 px-4 border-b">${item.deadline}</td>
-                        <td class="py-2 px-4 border-b">${item.budget}</td>
-                    `;
-                    tenderDataEl.appendChild(row);
-                });
+                return new Date(0); // Invalid date returns earliest date
+            };
+            
+            return parseDate(dateA) - parseDate(dateB);
+        }
+        
+        // Display data in the table
+        function displayData(data) {
+            dataBody.innerHTML = '';
+            
+            if (data.length === 0) {
+                status.textContent = '沒有找到符合條件的資料';
+                dataTable.classList.add('hidden');
+                resultsCount.classList.add('hidden');
+                return;
             }
             
-            // 應用篩選條件
-            function applyFilters() {
-                const keyword = customSearchEl.value.trim();
-                currentKeyword = keyword;
-                const dateFilter = dateFilterEl.value;
+            data.forEach((item, index) => {
+                const row = document.createElement('tr');
                 
-                // 基於關鍵字和日期進行篩選
-                currentFilteredData = allTenderData.filter(item => {
-                    const matchesKeyword = !keyword || item.agency.includes(keyword);
-                    const matchesDate = !dateFilter || item.publishDate === dateFilter;
-                    
-                    return matchesKeyword && matchesDate;
-                });
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td>${item.name}</td>
+                    <td>${item.organization}</td>
+                    <td>${item.method}</td>
+                    <td>${item.bidDate}</td>
+                    <td>${item.deadlineDate}</td>
+                    <td>${formatAmount(item.amount)}</td>
+                    <td><a href="${item.detailLink}" target="_blank" class="text-blue-600 hover:text-blue-800">查看</a></td>
+                `;
                 
-                currentPage = 1;
-                updateDisplay();
+                dataBody.appendChild(row);
+            });
+            
+            dataTable.classList.remove('hidden');
+            resultsCount.classList.remove('hidden');
+            countSpan.textContent = data.length;
+            
+            if (currentFilter) {
+                status.textContent = `已篩選出含有 "${currentFilter}" 的機關標案`;
+            } else {
+                status.textContent = '顯示全部資料';
             }
-            
-            // 按關鍵字篩選資料
-            function filterDataByKeyword(keyword) {
-                // 儲存當前關鍵字
-                currentKeyword = keyword;
-                
-                // 獲取當前日期條件
-                const dateFilter = dateFilterEl.value;
-                
-                // 根據關鍵字和日期篩選資料
-                return allTenderData.filter(item => {
-                    const matchesKeyword = item.agency.includes(keyword);
-                    const matchesDate = !dateFilter || item.publishDate === dateFilter;
-                    
-                    return matchesKeyword && matchesDate;
-                });
+        }
+        
+        // Format amount number to readable string
+        function formatAmount(amount) {
+            return amount.toLocaleString('zh-TW') + ' 元';
+        }
+        
+        // Show or hide loading indicator
+        function showLoading(isLoading) {
+            if (isLoading) {
+                loader.style.display = 'block';
+                dataTable.classList.add('hidden');
+                resultsCount.classList.add('hidden');
+            } else {
+                loader.style.display = 'none';
             }
-            
-            // 註冊按鈕事件
-            btnAll.addEventListener('click', function() {
-                currentKeyword = '';
-                customSearchEl.value = '';
-                applyFilters();
-            });
-            
-            btnHealthBureau.addEventListener('click', function() {
-                const keyword = '衛生局';
-                currentFilteredData = filterDataByKeyword(keyword);
-                customSearchEl.value = keyword;
-                currentPage = 1;
-                updateDisplay();
-            });
-            
-            btnMohw.addEventListener('click', function() {
-                const keyword = '衛生福利部';
-                currentFilteredData = filterDataByKeyword(keyword);
-                customSearchEl.value = keyword;
-                currentPage = 1;
-                updateDisplay();
-            });
-            
-            btnHpa.addEventListener('click', function() {
-                const keyword = '國民健康署';
-                currentFilteredData = filterDataByKeyword(keyword);
-                customSearchEl.value = keyword;
-                currentPage = 1;
-                updateDisplay();
-            });
-            
-            btnHospital.addEventListener('click', function() {
-                const keyword = '醫院';
-                currentFilteredData = filterDataByKeyword(keyword);
-                customSearchEl.value = keyword;
-                currentPage = 1;
-                updateDisplay();
-            });
-            
-            btnSearch.addEventListener('click', function() {
-                const keyword = customSearchEl.value.trim();
-                if (keyword === '') {
-                    alert('請輸入搜尋關鍵字');
-                    return;
-                }
-                
-                currentFilteredData = filterDataByKeyword(keyword);
-                currentPage = 1;
-                updateDisplay();
-            });
-            
-            // 分頁顯示按鈕
-            btnPaginated.addEventListener('click', function() {
-                isPaginated = true;
-                updateDisplay();
-            });
-            
-            // 全部顯示按鈕
-            btnAllData.addEventListener('click', function() {
-                isPaginated = false;
-                updateDisplay();
-            });
-            
-            // 每頁顯示數量變更
-            itemsPerPageEl.addEventListener('change', function() {
-                itemsPerPage = parseInt(this.value);
-                currentPage = 1;
-                updateDisplay();
-            });
-            
-            // 按下Enter鍵也可以搜尋
-            customSearchEl.addEventListener('keyup', function(event) {
-                if (event.key === 'Enter') {
-                    btnSearch.click();
-                }
-            });
-            
-            // 初始化頁面時載入資料
-            fetchTenderData();
-        });
+        }
     </script>
 </body>
 </html>
-     
