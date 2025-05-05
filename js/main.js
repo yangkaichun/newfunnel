@@ -27,6 +27,29 @@ document.addEventListener('DOMContentLoaded', function() {
     // 初始化加載數據
     initializeData();
     
+    // 監聽數據更新事件
+    document.addEventListener('tenderDataUpdated', function(e) {
+        console.log('收到數據更新事件', e.detail);
+        updateUI(e.detail);
+    });
+    
+    // 更新 UI 函數
+    function updateUI(data) {
+        // 更新最後更新時間
+        if (data.lastUpdate) {
+            lastUpdateElement.textContent = data.lastUpdate;
+        }
+        
+        // 更新表格
+        updateTable(data.items);
+        
+        // 更新分頁
+        updatePagination(data.pages, data.currentPage);
+        
+        // 隱藏載入指示器
+        showLoading(false);
+    }
+    
     // 篩選按鈕事件
     filterButtons.forEach(button => {
         button.addEventListener('click', function() {
@@ -164,7 +187,9 @@ document.addEventListener('DOMContentLoaded', function() {
         if (currentPage > 1) {
             addPaginationButton('«', currentPage - 1);
         }
-        
+        讓我繼續完成 main.js 文件的更新：
+
+Copy// main.js（續）
         // 頁碼按鈕
         let startPage = Math.max(1, currentPage - 2);
         let endPage = Math.min(pages, startPage + 4);
